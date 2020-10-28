@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="572.0" prefWidth="746.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+  <tabs>
+    <Tab text="Enviar mensaje">
+      <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="536.0" prefWidth="758.0">
+               <children>
+                  <Button layoutX="643.0" layoutY="457.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="72.0" text="Cancelar" />
+                  <Button layoutX="544.0" layoutY="457.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="79.0" text="Enviar" />
+                  <RadioButton layoutX="430.0" layoutY="52.0" mnemonicParsing="false" text="Mail" />
+                  <RadioButton layoutX="335.0" layoutY="52.0" mnemonicParsing="false" text="WhatsApp" />
+                  <TextArea layoutX="335.0" layoutY="200.0" prefHeight="144.0" prefWidth="369.0" promptText="Ingrese mensaje aqui" />
+                  <TextArea layoutX="390.0" layoutY="104.0" prefHeight="38.0" prefWidth="308.0" promptText="Ingrese asunto aqui" />
+                  <TableView layoutX="40.0" layoutY="53.0" prefHeight="291.0" prefWidth="236.0">
+                    <columns>
+                      <TableColumn prefWidth="254.0" text="Elegir contacto:" />
+                    </columns>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                  </TableView>
+                  <TextArea layoutX="40.0" layoutY="402.0" prefHeight="81.0" prefWidth="271.0" />
+                  <Text fill="#757575" layoutX="342.0" layoutY="117.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Asunto:" />
+                  <Text fill="#757575" layoutX="339.0" layoutY="190.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mensaje:" wrappingWidth="46.822265625" />
+                  <Text fill="#757575" layoutX="40.0" layoutY="388.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Visualizacion de notas del contacto:" />
+               </children></AnchorPane>
+      </content>
+    </Tab>
+    <Tab text="Editar contacto">
+      <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <Text fill="#757575" layoutX="24.0" layoutY="61.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Elige el contacto a modificar o eliminar:" />
+                  <TextArea layoutX="423.0" layoutY="57.0" prefHeight="0.0" prefWidth="277.0" />
+                  <TextArea layoutX="423.0" layoutY="139.0" prefHeight="0.0" prefWidth="277.0" />
+                  <TextArea layoutX="423.0" layoutY="219.0" prefHeight="0.0" prefWidth="277.0" />
+                  <Text fill="#757575" layoutX="296.0" layoutY="83.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nombre del contacto:" />
+                  <Text fill="#757575" layoutX="383.0" layoutY="162.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mail:" />
+                  <Text fill="#757575" layoutX="360.0" layoutY="246.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Telefono:" />
+                  <Button layoutX="625.0" layoutY="452.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="88.0" text="Cancelar" />
+                  <Button layoutX="518.0" layoutY="452.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="88.0" text="Modificar" />
+                  <Button layoutX="84.0" layoutY="420.0" mnemonicParsing="false" text="Eliminar Contacto" />
+                  <TableView layoutX="24.0" layoutY="81.0" prefHeight="300.0" prefWidth="241.0">
+                     <columns>
+                        <TableColumn prefWidth="230.0" text="Contactos" />
+                     </columns>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                  </TableView>
+                  <TextArea layoutX="422.0" layoutY="311.0" prefHeight="70.0" prefWidth="277.0" />
+                  <Text fill="#757575" layoutX="379.0" layoutY="324.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Notas:" />
+               </children></AnchorPane>
+      </content>
+    </Tab>
+      <Tab text="Crear nuevo contacto">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <TextArea layoutX="235.0" layoutY="60.0" prefHeight="44.0" prefWidth="277.0" />
+                  <TextArea layoutX="235.0" layoutY="130.0" prefHeight="44.0" prefWidth="277.0" />
+                  <TextArea layoutX="235.0" layoutY="201.0" prefHeight="44.0" prefWidth="277.0" />
+                  <Text fill="#757575" layoutX="105.0" layoutY="73.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nombre del contacto:" />
+                  <Text fill="#757575" layoutX="191.0" layoutY="143.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mail:" />
+                  <Text fill="#757575" layoutX="172.0" layoutY="214.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Telefono:" />
+                  <Button layoutX="621.0" layoutY="452.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="88.0" text="Cancelar" />
+                  <Button layoutX="483.0" layoutY="452.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="112.0" text="Crear contacto" />
+                  <TextArea layoutX="235.0" layoutY="274.0" prefHeight="70.0" prefWidth="277.0" />
+                  <Text fill="#757575" layoutX="187.0" layoutY="287.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Notas:" />
+               </children>
+            </AnchorPane>
+        </content>
+      </Tab>
+  </tabs>
+</TabPane>
