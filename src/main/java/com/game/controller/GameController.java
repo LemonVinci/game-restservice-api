@@ -30,7 +30,7 @@ public class GameController {
     private ContactoService service;
 
     @PostMapping("/addContacto")
-    public Contacto addContacto(@RequestParam Contacto Contacto) {
+    public Contacto addContacto(@RequestBody Contacto Contacto) {
         return service.saveContacto(Contacto);
     }
 
