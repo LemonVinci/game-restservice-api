@@ -39,9 +39,10 @@ public class ContactoService {
     }
 
     public Contacto updateContacto(Contacto contacto) {
+    	
     	Contacto existingContacto = repository.findById(contacto.getId()).orElse(null);
     	existingContacto.setName(contacto.getName());
-    	existingContacto.setEmail(contacto.getEmail());
+    	existingContacto.setEmail(contacto.getEmail().toLowerCase());
     	existingContacto.setTelefono(contacto.getTelefono());
         return repository.save(existingContacto);
     }

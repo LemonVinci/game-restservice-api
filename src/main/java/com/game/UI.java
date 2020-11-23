@@ -4,42 +4,37 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JTextField;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 
-import com.game.controller.GameController;
 import com.game.model.Contacto;
-import com.game.service.ContactoService;
-
-import javassist.expr.Instanceof;
 
 
 public class UI {
@@ -53,48 +48,137 @@ public class UI {
 	static JLabel lblMail;
 	static JLabel lblName;
 	
+	static JButton bEditarContacto;
+	static JButton bCrearContacto;
+	static JButton buttonCrearContacto;
+	//lists 
+    static JList contactos; 
+    //contactList index where user steped
+    static int index;
+    
+    public static List<Contacto> listContacto;
+    
+    static JFrame frame;
+	
 	public static void main (String[] args) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
+		buildComponentsAlta();
+	}
+	
+	private static void buildFrameAlta() {
 		Font font = new Font("SansSerif", Font.PLAIN, 30);
+		if(frame!=(null)) 
+			frame.dispose();
+	    frame=new JFrame();
+
+	    frame.add(bCrearContacto);
+	    frame.add(bEditarContacto);
+	    frame.add(buttonCrearContacto);
+	    frame.add(txtTelefono);
+	    frame.add(txtName);
+	    frame.add(txtMail);
+	    frame.add(lblTelefono);
+	    frame.add(lblName);
+	    frame.add(lblMail);
 		
+	    frame.setFont(font);
+	    frame.setSize(700,700);
+	    frame.setLayout(null);
+	    frame.setVisible(true);
+	    frame.getContentPane().setBackground(Color.BLACK);
+	}
+	
+	private static void buildFrameModificaciones() {
+		Font font = new Font("SansSerif", Font.PLAIN, 15);
+		if(frame!=(null)) 
+			frame.dispose();
+	    frame=new JFrame();
+
+	    frame.add(bCrearContacto);
+	    frame.add(bEditarContacto);
+	    frame.add(buttonCrearContacto);
+	    frame.add(txtTelefono);
+	    frame.add(txtName);
+	    frame.add(txtMail);
+	    frame.add(lblTelefono);
+	    frame.add(lblName);
+	    frame.add(lblMail);
+	    frame.add(contactos);
 		
+	    frame.setFont(font);
+	    frame.setSize(700,700);
+	    frame.setLayout(null);
+	    frame.setVisible(true);
+	    frame.getContentPane().setBackground(Color.BLACK);
+	}
+
+	private static List<Contacto> jsonFormatterContacto(String s) {
+		List<Contacto> contactList = new ArrayList<Contacto>();
+		//Test for formatter
+		//String s = "[{\"id\":1,\"name\":\"nana ferrari\",\"email\":\"asd@gmail.com\",\"telefono\":\"4864378\"},{\"id\":2,\"name\":\"martin chevrolet\",\"email\":\"aassdd@gmail.com\",\"telefono\":\"4285289\"},{\"id\":14,\"name\":\"sabala\",\"email\":\"asd@gmail.com\",\"telefono\":\"41112222\"},{\"id\":15,\"name\":\"nombre\",\"email\":\"telefono\",\"telefono\":\"mail\"},{\"id\":16,\"name\":\"ejemplo1\",\"email\":\"ejemplo3\",\"telefono\":\"ejemplo2\"},{\"id\":17,\"name\":\"\",\"email\":\"\",\"telefono\":\"\"}]";
+		s = s.replace(",{", "");
+		s = s.replace("{", "");
+		s = s.replace("[", "");
+		s = s.replace("]", "");
+		Contacto c;
+		String[] pairs = s.split("}");
+		for (int i=0;i<pairs.length;i++) {
+		    String pair = pairs[i];
+		    String[] pairsProps = pair.split(",");
+		    c = new Contacto();
+		    for (int x=0; x< pairsProps.length ;x++) {
+		    	String[] keyValue = pairsProps[x].split(":");
+		    	if(keyValue[0].equals("\"id\"")) {
+		    		c.setId(Integer.valueOf(keyValue[1].replace("\"","")));
+		    	}else if(keyValue[0].equals("\"name\"")) {
+		    		c.setName(keyValue[1].replace("\"",""));
+		    	}else if(keyValue[0].equals("\"email\"")) {
+		    		c.setEmail(keyValue[1].replace("\"",""));
+		    	}else if(keyValue[0].equals("\"telefono\"")) {
+		    		c.setTelefono(keyValue[1].replace("\"",""));
+		    		contactList.add(c);
+		    	}
+		    }
+		}
+		return contactList;
+	}
+	
+	private static void buildComponentsAlta(){
+		Font font = new Font("SansSerif", Font.PLAIN, 30);
 		//////////TEXTBOX
 		txtName = new JTextField();
 		txtName.setBounds(270,150,333,40);
 		txtName.setFont(font);
 		
-		txtMail = new JTextField();
-		txtMail.setBounds(270,200,333,40);
-		txtMail.setFont(font);
-		
 		txtTelefono = new JTextField();
-		txtTelefono.setBounds(270,250,333,40);
+		txtTelefono.setBounds(270,200,333,40);
 		txtTelefono.setFont(font);
+		
+		txtMail = new JTextField();
+		txtMail.setBounds(270,250,333,40);
+		txtMail.setFont(font);
 		////FIN TEXTBOX
 		
 		//////////BOTON
-		JButton bEditarContacto=new JButton("Editar contacto");
-		bEditarContacto.setBounds(0, 0, 280, 80);
-		bEditarContacto.setBackground(new Color(40,130,255));
-		bEditarContacto.setFont(font);
-		bEditarContacto.setForeground(Color.WHITE);
-		//buttonCrearContacto.setFont(new Font());
-		JButton bCrearContacto=new JButton("Crear nuevo contacto");
-		bCrearContacto.setBounds(280, 0, 280, 80);
+		
+		bCrearContacto=new JButton("Crear nuevo contacto");
+		bCrearContacto.setBounds(0, 0, 330, 80);
 		bCrearContacto.setBackground(new Color(40,130,255));
 		bCrearContacto.setFont(font);
 		bCrearContacto.setForeground(Color.WHITE);
-		//buttonCrearContacto.setFont(new Font());
 		
-		JButton buttonCrearContacto=new JButton("Crear contacto");
+		 bEditarContacto=new JButton("Editar contacto");
+		 bEditarContacto.setBounds(330, 0, 280, 80);
+		 bEditarContacto.setBackground(new Color(40,130,255));
+		 bEditarContacto.setFont(font);
+		 bEditarContacto.setForeground(Color.WHITE);	
+			
+		
+		 buttonCrearContacto=new JButton("Crear contacto");
 		buttonCrearContacto.setBounds(330, 500, 280, 80);
 		buttonCrearContacto.setBackground(new Color(40,130,255));
 		buttonCrearContacto.setFont(font);
 		buttonCrearContacto.setForeground(Color.WHITE);
-		//buttonCrearContacto.setFont(new Font());
-        // these next two lines do the magic..
-		//buttonCrearContacto.setContentAreaFilled(false);
-		//buttonCrearContacto.setOpaque(true);
-        
+
 		
 		//////////LABEL
 		font = new Font("SansSerif", Font.PLAIN, 25);
@@ -113,6 +197,7 @@ public class UI {
 		lblName.setFont(font);
 		lblName.setForeground(Color.WHITE);
 		////FIN LABEL
+		
 		buttonCrearContacto.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -142,39 +227,168 @@ public class UI {
 				}
 			}
 		});
+		
+		bEditarContacto.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					buildComponentsModificaciones();
+				} catch (ClientProtocolException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
 		//////////FIN BOTON
 		
-		buildFrame(buttonCrearContacto,bCrearContacto,bEditarContacto,font);
+		buildFrameAlta();
 	}
 	
-	private static void buildFrame(JButton button,JButton button2,JButton button3,Font font) {
-		JFrame f=new JFrame();
+	private static void buildComponentsModificaciones() throws ClientProtocolException, IOException{
+		Font font = new Font("SansSerif", Font.PLAIN, 25);
+		buildContactList();
 		
+		contactos = new JList(buildNameList().toArray());
+		contactos.setBounds(10,100,300,400);
+		contactos.setFont(font);
+		contactos.addMouseListener(new MouseAdapter() {
+		    public void mouseClicked(MouseEvent evt) {
+		        JList list = (JList)evt.getSource();
+		        if (evt.getClickCount() == 1) {
+		            index = list.locationToIndex(evt.getPoint());
+		            txtName.setText(listContacto.get(index).getName());
+		            txtMail.setText(listContacto.get(index).getEmail());
+		            txtTelefono.setText(listContacto.get(index).getTelefono());
+		        }
+		    }
+		});
 		
-		f.add(button);
-		f.add(button2);
-		f.add(button3);
-		f.add(txtTelefono);
-		f.add(txtName);
-		f.add(txtMail);
-		f.add(lblTelefono);
-		f.add(lblName);
-		f.add(lblMail);
+		font = new Font("SansSerif", Font.PLAIN, 30);
+		//contactos.addListSelectionListener(s); 
+		//////////TEXTBOX
+		txtName = new JTextField();
+		txtName.setBounds(350,150,333,40);
+		txtName.setFont(font);
 		
-		f.setFont(font);
-		f.setSize(700,700);
-		f.setLayout(null);
-		f.setVisible(true);
-		f.getContentPane().setBackground(Color.BLACK);
+		txtMail = new JTextField();
+		txtMail.setBounds(350,250,333,40);
+		txtMail.setFont(font);
+		
+		txtTelefono = new JTextField();
+		txtTelefono.setBounds(350,350,333,40);
+		txtTelefono.setFont(font);
+		////FIN TEXTBOX
+		
+		//////////BOTON
+		bCrearContacto=new JButton("Crear nuevo contacto");
+		bCrearContacto.setBounds(0, 0, 330, 80);
+		bCrearContacto.setBackground(new Color(40,130,255));
+		bCrearContacto.setFont(font);
+		bCrearContacto.setForeground(Color.WHITE);
+		
+		 bEditarContacto=new JButton("Editar contacto");
+		 bEditarContacto.setBounds(330, 0, 280, 80);
+		 bEditarContacto.setBackground(new Color(40,130,255));
+		 bEditarContacto.setFont(font);
+		 bEditarContacto.setForeground(Color.WHITE);	
+			
+		
+		 buttonCrearContacto=new JButton("Modificar contacto");
+		buttonCrearContacto.setBounds(330, 500, 280, 80);
+		buttonCrearContacto.setBackground(new Color(40,130,255));
+		buttonCrearContacto.setFont(font);
+		buttonCrearContacto.setForeground(Color.WHITE);
+
+		//////////LABEL
+		font = new Font("SansSerif", Font.PLAIN, 25);
+		lblMail = new JLabel("Mail:");
+		lblMail.setBounds(350,200,333,40);
+		lblMail.setFont(font);
+		lblMail.setForeground(Color.WHITE);
+		
+		lblTelefono = new JLabel("Teléfono:");
+		lblTelefono.setBounds(350,300,333,40);
+		lblTelefono.setFont(font);
+		lblTelefono.setForeground(Color.WHITE);
+		
+		lblName = new JLabel("Nombre del contacto:");
+		lblName.setBounds(350,100,333,40);
+		lblName.setFont(font);
+		lblName.setForeground(Color.WHITE);
+		////FIN LABEL
+		
+		buttonCrearContacto.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				Contacto contacto = new Contacto();
+				
+				List<Contacto> contactoList = new ArrayList<Contacto>();
+				contactoList.add(contacto);
+
+
+				HttpClient httpclient = HttpClients.createDefault();
+				HttpPut httpput = new HttpPut("http://localhost:8080/update");
+				httpput.setHeader("Accept", "*/*");
+				httpput.setHeader("Content-type", "application/json");
+				try {
+					//httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));			
+					httpput.setEntity(new StringEntity("{\r\n" + 
+							"\"id\": \"" + listContacto.get(index).getId() + "\",\r\n" + 
+							"\"name\": \"" + txtName.getText()+ "\",\r\n" + 
+							"\"email\": \"" + txtMail.getText().toString()+ "\",\r\n" + 
+							"\"telefono\":\""+ txtTelefono.getText().toString() + "\"\r\n" + 
+							"}", Charset.forName("UTF-8")));
+
+					HttpResponse response = httpclient.execute(httpput);
+					//refresh de la lista
+					buildContactList();
+					buildFrameModificaciones();
+				
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		
+		bCrearContacto.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				buildComponentsAlta();
+			}
+		});
+		//////////FIN BOTON
+		
+		buildFrameModificaciones();
 	}
-	/*bModel.addChangeListener(new ChangeListener(){
-	@Override
-	public void stateChanged(ChangeEvent arg0) {
 	
-		if(bModel.isPressed()) {
+	private static void buildContactList() throws ClientProtocolException, IOException {
 		
+		HttpClient httpClient = HttpClients.createDefault();
+		HttpGet httpget = new HttpGet("http://localhost:8080/Contacto");
+		  // Get HttpResponse Status
+		HttpResponse response = httpClient.execute(httpget);
+        System.out.println(response.getStatusLine().toString());
+
+        HttpEntity entity = response.getEntity();
+        Header headers = entity.getContentType();
+        System.out.println(headers);
+        try {
+	        if (entity != null) {
+	        	 String responseString = EntityUtils.toString(entity);
+	        	 System.out.println(responseString);
+	        	 listContacto = jsonFormatterContacto(responseString);
+	        }
+        }catch (Exception e) {
+        	e.printStackTrace();
+        }
+	}
+	
+	private static List<String> buildNameList() {
+		List<String> contactNames = new ArrayList<String>();
+		for(Contacto contacto : listContacto){
+			contactNames.add(contacto.getName());
 		}
+		return contactNames;
 	}
-});
-*/
 }
