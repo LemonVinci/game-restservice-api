@@ -61,6 +61,6 @@ public class GameController {
 
     @DeleteMapping("/delete/{id}")
     public String deleteContacto(@PathVariable int id) {
-        return service.deleteContacto(id);
+        return service.deleteContacto(id) ;
     }
 }
